@@ -1,5 +1,9 @@
 class Popup {
     // build popup with parameters
+    // New params:
+    // - html: string - Overrides content (param `.content` is not used anymore) with plain HTML
+    // - htmlPrepend: string - Prepends HTML to content
+    // - htmlAppend: string - Appends HTML to content
     constructor(params = {}) {
         this.params = params;
         this.init();
@@ -94,6 +98,10 @@ class Popup {
         head.append(style);
         style.appendChild(document.createTextNode(this.css));
 
+        // New feature: Allow overriding content with plain HTML
+        if (this.params.html) {
+            this.content = this.params.html.toString();
+        } else {
         // process input text
         this.content = this.content.split("\n");
         for (let i = 0; i < this.content.length; i++) {
@@ -127,6 +135,14 @@ class Popup {
             this.content[i] = line;
         }
         this.content = this.content.join("");
+        }
+
+        if (this.params.htmlPrepend) {
+            this.content = this.params.htmlPrepend + this.content;
+        }
+        if (this.params.htmlAppend) {
+            this.content = this.content + this.params.htmlAppend;
+        }
 
         // create popup
         this.popupEl = document.createElement("div");
