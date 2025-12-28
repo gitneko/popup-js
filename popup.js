@@ -4,6 +4,7 @@ class Popup {
     // - html: string - Overrides content (param `.content` is not used anymore) with plain HTML
     // - htmlPrepend: string - Prepends HTML to content
     // - htmlAppend: string - Appends HTML to content
+    // - showCallback: callback - Callback is called when popup gets shown (loadCallback gets only called once)
     // - skipInit: bool - Skips initialization in constructor (you MUST call `.init()` yourself before using the popup)
     constructor(params = {}) {
         this.params = params;
@@ -179,7 +180,7 @@ class Popup {
 
         // run load callback if specified
         if (this.params.loadCallback && typeof this.params.loadCallback == "function") {
-            this.params.loadCallback();
+            this.params.loadCallback(this);
         }
 
         // show popup (with no animation) if enabled
@@ -190,6 +191,12 @@ class Popup {
                     return;
                 }
             }
+
+            // run show callback if specified
+            if (this.params.showCallback && typeof this.params.showCallback == "function") {
+                this.params.showCallback(this);
+            }
+
             this.popupEl.classList.add("fade-in");
             postShow(disableScroll);
         }
@@ -206,6 +213,11 @@ class Popup {
     }
 
     show() {
+        // run show callback if specified
+        if (this.params.showCallback && typeof this.params.showCallback == "function") {
+            this.params.showCallback(this);
+        }
+
         this.popupEl.classList.remove("fade-out");
         this.popupEl.classList.add("fade-in");
         postShow(this.params.disableScroll ?? true);
@@ -230,7 +242,7 @@ function postShow(disableScrollParam) {
 function postHide(popup) {
     // call hide callback if set
     if (popup.params.hideCallback && typeof popup.params.hideCallback == "function") {
-        popup.params.hideCallback();
+        popup.params.hideCallback(this);
     }
     enableScroll();
 }
