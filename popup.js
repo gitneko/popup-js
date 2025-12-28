@@ -1,50 +1,8 @@
-const queuedPopups = [];
-let loadPhase = 0;
-
-// download css and apply
-const head = document.getElementsByTagName("head")[0];
-const link = document.createElement("link");
-link.rel = "stylesheet";
-link.type = "text/css";
-link.href = "https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.3/popup.min.css";
-//link.href = "../popup.css";
-link.media = "all";
-head.appendChild(link);
-
-// when css loads add to loadPhase
-link.onload = function () {
-    loadPhase += 1;
-    if (loadPhase === 2) {
-        loadPopups();
-    }
-};
-
-// when doc loads add to loadPhase
-window.addEventListener("load", () => {
-    loadPhase += 1;
-    if (loadPhase === 2) {
-        loadPopups();
-    }
-});
-
-function loadPopups() {
-    // initialize all queued popups
-    while (queuedPopups.length > 0) {
-        queuedPopups.shift().init();
-    }
-}
-
 class Popup {
     // build popup with parameters
     constructor(params = {}) {
         this.params = params;
-        // if css and doc are already loaded, immediately init popup
-        if (loadPhase == 2) {
-            this.init();
-        } else {
-            // queue up the popup to be shown when css and doc load
-            queuedPopups.push(this);
-        }
+        this.init();
     }
 
     init() {

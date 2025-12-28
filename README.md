@@ -10,6 +10,12 @@ Install `popup-js` with the following script tag:
 <script src="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.3/popup.min.js"></script>
 ```
 
+And add the stylesheet:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.3/popup.min.css" />
+```
+
 ## Documentation
 
 A full documentation is available [here](https://popup-js.rtfd.io).
