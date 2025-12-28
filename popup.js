@@ -178,29 +178,6 @@ class Popup {
             }
         });
 
-        // run load callback if specified
-        if (this.params.loadCallback && typeof this.params.loadCallback == "function") {
-            this.params.loadCallback(this);
-        }
-
-        // show popup (with no animation) if enabled
-        if (this.showImmediately) {
-            // check for local storage (already closed once)
-            if (this.showOnce && localStorage) {
-                if (localStorage.getItem("popup-" + this.id)) {
-                    return;
-                }
-            }
-
-            // run show callback if specified
-            if (this.params.showCallback && typeof this.params.showCallback == "function") {
-                this.params.showCallback(this);
-            }
-
-            this.popupEl.classList.add("fade-in");
-            postShow(disableScroll);
-        }
-
         // hide popup on escape key press
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
@@ -210,6 +187,23 @@ class Popup {
                 this.hide();
             }
         });
+
+        // run load callback if specified
+        if (this.params.loadCallback && typeof this.params.loadCallback == "function") {
+            this.params.loadCallback(this);
+        }
+
+        // show popup if enabled
+        if (this.showImmediately) {
+            // check for local storage (already closed once)
+            if (this.showOnce && localStorage) {
+                if (localStorage.getItem("popup-" + this.id)) {
+                    return;
+                }
+            }
+
+            this.show();
+        }
     }
 
     show() {
@@ -220,12 +214,20 @@ class Popup {
 
         this.popupEl.classList.remove("fade-out");
         this.popupEl.classList.add("fade-in");
+
+        const bodyEl = document.getElementsByTagName('html')[0];
+        this.previousBodyOverflow = bodyEl.style['scrollbar-width'];
+        bodyEl.style['scrollbar-width'] = 'none';
+
         postShow(this.params.disableScroll ?? true);
     }
 
     hide() {
+        document.getElementsByTagName('html')[0].style['scrollbar-width'] = this.previousBodyOverflow ?? '';
+
         this.popupEl.classList.remove("fade-in");
         this.popupEl.classList.add("fade-out");
+
         // remember for next time
         if (localStorage && this.showOnce) {
             localStorage.setItem("popup-" + this.id, true);
