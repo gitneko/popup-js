@@ -4,9 +4,13 @@ class Popup {
     // - html: string - Overrides content (param `.content` is not used anymore) with plain HTML
     // - htmlPrepend: string - Prepends HTML to content
     // - htmlAppend: string - Appends HTML to content
+    // - skipInit: bool - Skips initialization in constructor (you MUST call `.init()` yourself before using the popup)
     constructor(params = {}) {
         this.params = params;
-        this.init();
+
+        if (!params.skipInit) {
+            this.init();
+        }
     }
 
     init() {
@@ -102,39 +106,39 @@ class Popup {
         if (this.params.html) {
             this.content = this.params.html.toString();
         } else {
-        // process input text
-        this.content = this.content.split("\n");
-        for (let i = 0; i < this.content.length; i++) {
-            let line = this.content[i].trim();
-            if (line === "") continue;
-            // add <p>
-            if (line.includes("§")) {
-                const split = line.split("§");
-                line = `<p class="${split[0].trim()}">${split[1].trim()}</p>`;
-            } else {
-                line = `<p>${line}</p>`;
+            // process input text
+            this.content = this.content.split("\n");
+            for (let i = 0; i < this.content.length; i++) {
+                let line = this.content[i].trim();
+                if (line === "") continue;
+                // add <p>
+                if (line.includes("§")) {
+                    const split = line.split("§");
+                    line = `<p class="${split[0].trim()}">${split[1].trim()}</p>`;
+                } else {
+                    line = `<p>${line}</p>`;
+                }
+
+                // replace two spaces with nbsps
+                line = line.replace(/  /g, "&nbsp;&nbsp;");
+
+                /* ------- Reduced element formatting ------- */
+
+                // a
+                while (/{a-(.*?)}\[(.*?)]/.test(line)) line = line.replace(/{a-(.*?)}\[(.*?)]/g, '<a href="$1" target="_blank">$2</a>');
+
+                // button
+                while (/{btn-(.*?)}\[(.*?)]/.test(line)) line = line.replace(/{btn-(.*?)}\[(.*?)]/g, '<button class="$1">$2</button>');
+
+                // reduced style formatting
+                line = line
+                    .replace(/([^\\]?){/g, '$1<span class="')
+                    .replace(/([^\\]?)}\[/g, '$1">')
+                    .replace(/([^\\]?)]/g, "$1</span>");
+
+                this.content[i] = line;
             }
-
-            // replace two spaces with nbsps
-            line = line.replace(/  /g, "&nbsp;&nbsp;");
-
-            /* ------- Reduced element formatting ------- */
-
-            // a
-            while (/{a-(.*?)}\[(.*?)]/.test(line)) line = line.replace(/{a-(.*?)}\[(.*?)]/g, '<a href="$1" target="_blank">$2</a>');
-
-            // button
-            while (/{btn-(.*?)}\[(.*?)]/.test(line)) line = line.replace(/{btn-(.*?)}\[(.*?)]/g, '<button class="$1">$2</button>');
-
-            // reduced style formatting
-            line = line
-                .replace(/([^\\]?){/g, '$1<span class="')
-                .replace(/([^\\]?)}\[/g, '$1">')
-                .replace(/([^\\]?)]/g, "$1</span>");
-
-            this.content[i] = line;
-        }
-        this.content = this.content.join("");
+            this.content = this.content.join("");
         }
 
         if (this.params.htmlPrepend) {
