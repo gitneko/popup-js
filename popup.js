@@ -58,7 +58,7 @@ class Popup {
         .popup.${this.id} {
             transition-duration: ${this.fadeTime};
             text-shadow: ${this.textShadow};
-            font-family: '${this.params.font ?? "Inter"}', 'Inter', Helvetica, sans-serif;
+            font-family: ${this.params.font ?? "Inter"}, 'Inter', Helvetica, sans-serif;
         }
         
         .popup.${this.id} .popup-content {
