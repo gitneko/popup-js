@@ -46,8 +46,8 @@ class Popup {
         this.hideTitle = this.params.hideTitle ?? false;
 
         // height and width calculations
-        this.height = `min(${770 * this.heightMultiplier}px, ${90 * this.heightMultiplier}vw)`;
-        this.width = `min(${770 * this.widthMultiplier}px, ${90 * this.widthMultiplier}vw)`;
+        this.height = `min(${770 * this.heightMultiplier}px, 95vw)`;
+        this.width = `min(${770 * this.widthMultiplier}px, 95vw)`;
 
         // font size calculation
         this.fontSize = `min(${25 * this.fontSizeMultiplier}px, ${4 * this.fontSizeMultiplier}vw)`;
